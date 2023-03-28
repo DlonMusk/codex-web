@@ -1,13 +1,30 @@
 import './App.css';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectUser } from './dataLayer/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, logout, selectUser } from './dataLayer/slices/userSlice';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
+import { useEffect } from 'react';
+import { auth } from './firebase';
 
 function App() {
 
+  const dispatch = useDispatch()
+
   const user = useSelector(selectUser)
+
+  useEffect(() => {
+    auth.onAuthStateChanged(userAuth => {
+      if(userAuth) {
+        dispatch(login({
+          uid: userAuth.uid,
+          email: userAuth.email
+        }))
+      } else {
+        dispatch(logout())
+      }
+    })
+  }, [dispatch])
 
   return (
     <div className="">
