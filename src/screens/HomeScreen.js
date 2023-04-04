@@ -82,8 +82,8 @@ function HomeScreen() {
           {/* add text if tasks are loading */}
           {!tasks?.empty && (
             tasks?.docs.map(task => (
-              <div onClick={() => setSelectedTask(task.id)}>
-                <TaskRow key={task.id} props={{active: selectedTask, task: {taskId: task.id, taskData: task.data()}}}  />
+              <div onClick={() => setSelectedTask({active: task.id, taskData: task.data()})}>
+                <TaskRow key={task.id} props={{active: selectedTask?.active, task: {taskId: task.id, taskData: task.data()}}}  />
               </div>
             ))
 
@@ -93,7 +93,7 @@ function HomeScreen() {
 
         {/* task screen */}
         {selectedTask ? (
-          <TaskScreen key={selectedTask}  taskId={selectedTask}/>
+          <TaskScreen key={selectedTask}  task={selectedTask}/>
         ) : (
           <div className='sm:w-3/4 sm:flex hidden h-full bg-black'>
 

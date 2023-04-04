@@ -5,19 +5,23 @@ import { useSelector } from 'react-redux'
 import { selectUser } from '../dataLayer/slices/userSlice'
 import { db } from '../firebase'
 
-function TaskScreen({ taskId }) {
+function TaskScreen({ task }) {
 
-    const user = useSelector(selectUser)
+    // const user = useSelector(selectUser)
 
-    const [taskData, loading] = useDocument(doc(db, 'users', user.uid, 'tasks', taskId))
+    // const [taskData, loading] = useDocument(doc(db, 'users', user.uid, 'tasks', taskId))
 
-    console.log(taskData?.data())
+    // console.log(taskData?.data())
+
+    console.log(task)
+
+    const {_, taskData } = task
 
     return (
         <div className='sm:w-3/4 sm:flex hidden h-full bg-ultrablue'>
 
-            {taskData && (
-                <div>{taskData?.data()?.title}</div>
+            {task && (
+                <div>{taskData.title}</div>
             )}
 
         </div>
