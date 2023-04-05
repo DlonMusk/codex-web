@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { selectUser } from '../dataLayer/slices/userSlice'
+import { logout, selectUser } from '../dataLayer/slices/userSlice'
 import { FaUserCircle } from 'react-icons/fa'
+import { auth } from '../firebase'
 
 function Nav() {
 
@@ -13,7 +14,7 @@ function Nav() {
         <div className='sticky top-0 z-10 h-[70px] w-full bg-offwhite flex justify-center'>
             <div className='relative flex justify-between items-center p-5 w-full sm:max-w-7xl'>
                 {/* CODEX */}
-                <h1 className='font-bold font-main tracking-[10px] sm:text-2xl sm:tracking-[15px]'>CODE<span className='text-accent'>X</span></h1>
+                <h1 className='font-bold font-main uppercase tracking-[10px] sm:text-2xl sm:tracking-[15px]'>{user.username && `${user.username}'S`} CODE<span className='text-accent'>X</span></h1>
                 {/* profile img */}
                 {user.profilePhoto ? (
                     <img className='rounded-full h-10 w-10' src={user.profilePhoto} alt='profile img' onClick={() => setOptionsOpen(!optionsOpen)}></img>
@@ -27,7 +28,13 @@ function Nav() {
                             Stats
                         </button>
 
-                        <button className='tracking-widest bg-white p-3'>
+                        <button 
+                        className='tracking-widest bg-white p-3'
+                        onClick={() => {
+                            logout()
+                            auth.signOut()
+                        }}
+                        >
                             Log out
                         </button>
                     </div>

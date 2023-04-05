@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
+import { addDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import React, { useRef, useState } from 'react'
 import { auth, db } from '../firebase'
 import GoogleLogo from '../assets/GoogleLogo.png'
@@ -33,15 +33,29 @@ function LoginScreen() {
         const provider = new GoogleAuthProvider()
         signInWithPopup(auth, provider)
             .then((result) => {
-
                 const user = result.user;
+                const userDocRef = doc(db, 'users', user.uid)
 
-
-                console.log(user)
-                setDoc(doc(db, 'users', user.uid), {
-                    email: user.email,
-                    profilePhoto: user.photoURL,
+                getDoc(userDocRef)
+                .then(doc => {
+                    if(!doc.exists()) {
+                        console.log("new Doc")
+                        setDoc(userDocRef, {
+                            email: user.email,
+                            profilePhoto: user.photoURL,
+                            username: null
+                        })
+                        .then(() => {
+                            console.log('User document added successfully');
+                          })
+                          .catch((error) => {
+                            console.error('Error adding user document:', error);
+                          });
+                    } else {
+                        console.log("exists")
+                    }
                 })
+
             }).catch((error) => {
                 // Handle Errors here.
                 const errorMessage = error.message;

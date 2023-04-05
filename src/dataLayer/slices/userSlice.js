@@ -13,7 +13,7 @@ export const userSlice = createSlice({
             state.user = null
         },
         setUsername: (state, action) => {
-            state.user = {...state, username: action.payload}
+            state.user = {...state.user, username: action.payload}
         }
     }
 })

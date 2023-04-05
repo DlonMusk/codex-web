@@ -7,7 +7,6 @@ import HomeScreen from './screens/HomeScreen';
 import { useEffect } from 'react';
 import { auth, db } from './firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { loadTasks } from './dataLayer/slices/tasksSlice';
 
 function App() {
 
@@ -20,8 +19,8 @@ function App() {
       if(userAuth) {
         getDoc(doc(db, "users", userAuth.uid)).then(doc => {
           if(doc.exists){
-            // console.log("doc: ", doc.data().highScoreRating)
             const userData = doc.data()
+
             dispatch(login({
               uid: userAuth.uid,
               email: userAuth.email,
@@ -35,6 +34,7 @@ function App() {
               uid: userAuth.uid,
               email: userAuth.email
             }))
+            
           }
         })
       } else {

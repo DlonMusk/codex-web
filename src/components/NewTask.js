@@ -1,27 +1,44 @@
 import { addDoc, collection } from 'firebase/firestore'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BsClipboard2Plus, BsClockHistory } from 'react-icons/bs'
 import { IoMdCheckmark } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
-import { addTask } from '../dataLayer/slices/tasksSlice'
+import { setSelectedTask } from '../dataLayer/slices/taskSlice'
 import { selectUser } from '../dataLayer/slices/userSlice'
 import { db } from '../firebase'
 
 function NewTask() {
 
-    const [newTaskModalOpen, setNewTaskModalOpen] = useState()
+    const [newTaskModalOpen, setNewTaskModalOpen] = useState(false)
     const taskNameRef = useRef(null)
+    const modalRef = useRef(null);
+    const newTaskButtonRef = useRef(null)
     const user = useSelector(selectUser)
     const dispatch = useDispatch()
+
+
+    const handleClickOutside = (e) => {
+        e.stopPropagation()
+        if ((!modalRef.current || !modalRef.current.contains(e.target)) && (!newTaskButtonRef.current || !newTaskButtonRef.current.contains(e.target))) {
+            setNewTaskModalOpen(false)// Call onClose callback to close the modal
+        }
+    };
+    
+    useEffect(() => {
+        document.addEventListener("mouseup", handleClickOutside)
+        return () => {
+            document.removeEventListener("mouseup", handleClickOutside)
+        }
+    }, [])
 
     const createTask = async (e) => {
         e.preventDefault()
 
-        if(taskNameRef.current.value.length < 3){
+        if (taskNameRef.current.value.length < 3) {
             alert('Task title must be over 3 characters')
             return
         }
-        
+
         const doc = await addDoc(collection(db, 'users', user?.uid, 'tasks'), {
             title: taskNameRef.current.value,
             type: 'task'
@@ -33,43 +50,56 @@ function NewTask() {
         //     type: 'task'
         // }))
 
-
-        console.log(doc.id)
+        dispatch(setSelectedTask(doc.id))
 
         setNewTaskModalOpen(false)
     }
 
     const createHabit = async (e) => {
         e.preventDefault()
-        
+
+        if (taskNameRef.current.value.length < 3) {
+            alert('Task title must be over 3 characters')
+            return
+        }
+
+        const doc = await addDoc(collection(db, 'users', user?.uid, 'tasks'), {
+            title: taskNameRef.current.value,
+            type: 'habit'
+        })
+
+
+        console.log(doc.id)
+
         setNewTaskModalOpen(false)
     }
 
     return (
-        <div>
+        <div >
             <div
                 className='flex justify-center space-x-3 items-center h-[40px] sm:h-[50px] m-3 rounded-lg bg-gray-500 cursor-pointer'
-                onClick={() => setNewTaskModalOpen(true)}
+                onClick={(e) => setNewTaskModalOpen(!newTaskModalOpen)}
+                ref={newTaskButtonRef}
             >
                 <BsClipboard2Plus className='h-7 w-7' />
                 <h1 className='font-bold'>New Task</h1>
             </div>
             {newTaskModalOpen && (
-                <form className='h-[70px] flex items-center justify-around bg-white m-2 p-1'>
-                    <input className='p-2 w-5/12  bg-gray-200 rounded-lg' type="text" placeholder='Task name' ref={taskNameRef}/>
+                <form className='h-[70px] flex items-center justify-around bg-white m-2 p-1 rounded-lg' ref={modalRef}>
+                    <input className='p-2 w-5/12  bg-gray-200 rounded-lg' type="text" placeholder='Task name' ref={taskNameRef} />
                     <button
-                        className='flex  items-center space-x-3 bg-gray-500 p-1 px-2 rounded-lg'
+                        className='flex  items-center space-x-3 bg-blue-500 p-1 px-2 rounded-lg'
                         onClick={createTask}
                     >
                         <h1 className='font-mono font-semibold w-1/2'>Task</h1>
-                        <IoMdCheckmark className='h-5 w-5 ' />
+                        <IoMdCheckmark className='h-5 w-5' />
                     </button>
                     <button
-                        className='flex  items-center space-x-3 bg-gray-500 p-1 px-2 rounded-lg'
+                        className='flex  items-center space-x-3 bg-green-500 p-1 px-2 rounded-lg'
                         onClick={createHabit}
                     >
                         <h1 className='font-mono font-semibold w-1/2'>Habit</h1>
-                        <BsClockHistory className='h-5 w-5 ' />
+                        <BsClockHistory className='h-5 w-5' />
                     </button>
                 </form>
             )}
