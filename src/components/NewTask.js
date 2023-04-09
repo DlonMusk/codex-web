@@ -1,6 +1,6 @@
 import { addDoc, collection } from 'firebase/firestore'
 import React, { useEffect, useRef, useState } from 'react'
-import { BsClipboard2Plus, BsClockHistory } from 'react-icons/bs'
+import { BsClipboard2Plus, BsClockHistory, BsTree } from 'react-icons/bs'
 import { IoMdCheckmark } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSelectedTask } from '../dataLayer/slices/taskSlice'
@@ -11,7 +11,7 @@ function NewTask() {
 
     const [newTaskModalOpen, setNewTaskModalOpen] = useState(false)
     const taskNameRef = useRef(null)
-    const modalRef = useRef(null);
+    const modalRef = useRef(null)
     const newTaskButtonRef = useRef(null)
     const user = useSelector(selectUser)
     const dispatch = useDispatch()
@@ -23,7 +23,7 @@ function NewTask() {
             setNewTaskModalOpen(false)// Call onClose callback to close the modal
         }
     };
-    
+
     useEffect(() => {
         document.addEventListener("mouseup", handleClickOutside)
         return () => {
@@ -44,11 +44,6 @@ function NewTask() {
             type: 'task'
         })
 
-        // dispatch(addTask({
-        //     id: doc.id,
-        //     title: taskNameRef.current.value,
-        //     type: 'task'
-        // }))
 
         dispatch(setSelectedTask(doc.id))
 
@@ -76,13 +71,16 @@ function NewTask() {
 
     return (
         <div >
-            <div
-                className='flex justify-center space-x-3 items-center h-[40px] sm:h-[50px] m-3 rounded-lg bg-gray-500 cursor-pointer'
-                onClick={(e) => setNewTaskModalOpen(!newTaskModalOpen)}
-                ref={newTaskButtonRef}
-            >
-                <BsClipboard2Plus className='h-7 w-7' />
-                <h1 className='font-bold'>New Task</h1>
+            <div className='flex items-center justify-center'>
+                <div
+                    className='flex w-10/12 justify-center space-x-3 items-center h-[40px] sm:h-[50px] m-3 rounded-lg bg-gray-500 cursor-pointer'
+                    onClick={(e) => setNewTaskModalOpen(!newTaskModalOpen)}
+                    ref={newTaskButtonRef}
+                >
+                    <BsClipboard2Plus className='h-7 w-7' />
+                    <h1 className='font-bold'>New Task</h1>
+                </div>
+                <BsTree className='w-10 h-10' />
             </div>
             {newTaskModalOpen && (
                 <form className='h-[70px] flex items-center justify-around bg-white m-2 p-1 rounded-lg' ref={modalRef}>
@@ -95,7 +93,7 @@ function NewTask() {
                         <IoMdCheckmark className='h-5 w-5' />
                     </button>
                     <button
-                        className='flex  items-center space-x-3 bg-green-500 p-1 px-2 rounded-lg'
+                        className='flex items-center space-x-3 bg-green-500 p-1 px-2 rounded-lg'
                         onClick={createHabit}
                     >
                         <h1 className='font-mono font-semibold w-1/2'>Habit</h1>
