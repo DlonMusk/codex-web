@@ -35,7 +35,7 @@ function LoginScreen() {
             .then((result) => {
                 const user = result.user;
                 const userDocRef = doc(db, 'users', user.uid)
-
+                console.log('USERDOCREF: ', userDocRef)
                 getDoc(userDocRef)
                 .then(doc => {
                     if(!doc.exists()) {

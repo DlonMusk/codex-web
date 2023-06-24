@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import Nav from '../components/Nav'
 import NewTask from '../components/NewTask'
 import TaskRow from '../components/TaskRow'
+import TaskScreen from './TaskScreen'
 import { selectUser, setUsername } from '../dataLayer/slices/userSlice'
 import { db } from '../firebase'
 import { useCollection } from "react-firebase-hooks/firestore"
-import TaskScreen from '../components/TaskScreen'
 import { selectTask, setSelectedTask } from '../dataLayer/slices/taskSlice'
 
 function HomeScreen() {
@@ -95,7 +95,7 @@ function HomeScreen() {
           <TaskScreen key={selectedTask}  taskId={selectedTask}/>
         ) : (
           <div className='sm:w-3/4 sm:flex hidden h-full bg-black'>
-
+            
           </div>
         )}
       </div>

@@ -20,7 +20,7 @@ function App() {
         getDoc(doc(db, "users", userAuth.uid)).then(doc => {
           if(doc.exists){
             const userData = doc.data()
-
+            
             dispatch(login({
               uid: userAuth.uid,
               email: userAuth.email,
